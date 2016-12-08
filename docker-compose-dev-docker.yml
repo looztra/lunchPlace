@@ -1,0 +1,27 @@
+version: '2'
+services:
+  frontend-web-install:
+    image: looztra/node-no-root:7-alpine
+    command: npm install
+    user: "1000:1000"
+    working_dir: /home/u1000
+    volumes:
+      - ./frontend-web:/home/u1000
+  frontend-web-run:
+    image: looztra/node-no-root:7-alpine
+    command: npm run dev
+    depends_on:
+     - frontend-web-install
+    user: "1000:1000"
+    working_dir: /home/u1000
+    ports:
+     - "8090:8090" 
+    volumes:
+      - ./frontend-web:/home/u1000
+  backend:
+    build: ./backend/
+    ports:
+      - "8080:8080"
+
+
+#docker run --rm -v (pwd)/backend:/project -u `id -u`:`id -g` metahelicase/gradle:3.1 build
