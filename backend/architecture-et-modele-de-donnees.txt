@@ -1,0 +1,93 @@
+Organisation:
+- id
+- description
+- name
+- teams [team_id]
+- users [user_id]
+- restaurants:
+    - restaurant_id
+    - added: { timestamp: xxx, user_id: xxxx}
+
+scores:
+- restaurant_id
+- user_id: ${score}
+- timestamp: xxx
+
+Restaurant
+- id
+- name
+- address
+- foodCategories [foodCategoryId]
+- priceCategory
+
+Team
+- id
+- name
+- description
+- restaurants:
+    - restaurant_id
+    - ts_added
+    - user_id
+- management:
+  - created_by
+
+User
+- id
+- first_name
+- last_name
+- nick_name
+
+choices:
+- date
+- team_id
+- suggested_restaurant:
+    - restaurant_id
+    - timestamp
+- effective_restaurant:
+    - restaurant_id
+    - timestamp
+    - user_id
+
+votes:
+    - date
+    - user_id
+    - team_id
+    - votes:
+        - up_voted_restaurant_id
+        - down_voted_restaurant_id
+        - why_not_restaurant_id
+
+
+team_content_history
+- date
+- team_id
+- users:
+  - user_id
+  - entered_team_ts
+  - left_team_ts
+  - is_current_member
+
+
+Quelles sont les orgas d'un user: GET /user/{id}/organisations
+Quelles sont les teams d'une organisation: GET /organisation/{id}/teams
+Quels sont les users d'une organisation: GET /organisation/{id}/users
+Quels sont les restaurants d'une orga: GET /organisation/{id}/restaurants
+Quels sont les restaurants d'une team: GET /team/{id}/restaurants
+Vote du jour d'un user: POST /user/{id}/team/{id}/vote
+En tant qu'utilisateur, s'enregistrer dans une equipe pour le jour en cours: POST /user/team/{id}/register
+En tant qu'utilisateur, je peux noter un restaurant d'une orga: POST /restaurant/{id}/score
+En tant qu'utilisateur, je peux voir la note que j'ai donnée à un restaurant d'une orga: GET /restaurant/{id}/score
+En tant qu'admin, enregistrer un user dans une orga: POST /organisation/{id}/user/{id}/register
+En tant qu'admin, creer une nouvelle orga: POST /organisation
+En tant que appli FRONT, je déclare une connexion d'un utilisateur: POST /user/
+  - retourne un 201 si nouvel utilisateur
+  - retourne un 200 si utilisateur connu
+
+En tant qu'admin:
+  Editer une orga
+  Supprimer une orga
+  Lister les orga
+  Voir les infos d'une orga
+
+En tant que membre d'une orga, je peux ajouter un restaurant à une orga: POST /organisation/{id}/restaurant/add
+En tant que membre d'une equipe, je peux ajouter un restaurant à une équipe: POST /team/{id}/restaurant/add
