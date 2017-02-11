@@ -6,9 +6,10 @@ Organisation:
 - users [user_id]
 - restaurants:
     - restaurant_id
-    - added: { timestamp: xxx, user_id: xxxx}
+    - registred_by: ${user_id}
+    - at: ${timestamp}
 
-scores:
+Scores:
 - restaurant_id
 - user_id: ${score}
 - timestamp: xxx

@@ -6,3 +6,12 @@ management:
 security:
   basic:
     path: /zenikadmin/**
+
+
+lunchplace:
+  mongo:
+    host: localhost
+    port: 27001
+    user: lunchplace
+    password: rulez
+    db: lunchplace-dev
