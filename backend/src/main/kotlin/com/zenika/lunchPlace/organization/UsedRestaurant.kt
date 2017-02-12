@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne
 @Entity
 data class UsedRestaurant(
         @ManyToOne
-        val restaurant: Restaurant = Restaurant(),
+        val restaurant: Restaurant ,
         val timestamp: Long = 0,
 
         @Id @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)

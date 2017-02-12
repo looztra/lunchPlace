@@ -1,16 +1,28 @@
 package com.zenika.lunchPlace.organization
 
-import java.io.Serializable
 import java.util.*
-import javax.persistence.*
 
-@Entity
-data class Team(val name: String = "",
-                @ManyToMany
-                val users: MutableList<User> =  mutableListOf<User>(),
-                @ManyToMany
-                val preferredRestaurants: MutableList<PreferredRestaurant> = mutableListOf<PreferredRestaurant>(),
-                @OneToMany
-                val usedRestaurants: MutableList<UsedRestaurant> = mutableListOf<UsedRestaurant>(),
-                @Id @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
-                val id: Long = 0) : Serializable
+data class Team(
+        val _id: String?,
+        val name: String = "Someone forgot to name that Team!",
+        val description: String = "",
+        val registration: ManagementInfo
+)
+
+data class TeamRegistration(
+        val id: String,
+        val registrar: String,
+        val at: Date
+)
+
+data class ManagementInfo(
+        val registar: String,
+        val at: Date
+)
+
+data class TeamContent(
+        val _id: String?,
+        val date: Date,
+        val teamId: String,
+        val users: ArrayList<UserRegistration> = ArrayList<UserRegistration>()
+)

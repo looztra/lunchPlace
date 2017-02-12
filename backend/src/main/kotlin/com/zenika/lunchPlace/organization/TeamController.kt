@@ -22,42 +22,37 @@ class TeamController @Autowired constructor(val repository: TeamRepository,
 
     @CrossOrigin
     @GetMapping(value = "/{id}")
-    fun findById(@PathVariable id: Long) : Team
+    fun findById(@PathVariable id: Long): Team
             = repository.findById(id)
 
     @CrossOrigin
     @PostMapping(value = "/add")
     fun add(@RequestParam(value = "name", defaultValue = "Les Biloutes") name: String): ResponseEntity<Team> {
 
-        //by default a team has never eaten to any restaurant
-        val team = Team(name, ArrayList<User>(), ArrayList<PreferredRestaurant>(), ArrayList<UsedRestaurant>())
-
-        repository.save(team)
-
-        return ResponseEntity(team, HttpStatus.OK)
+        return ResponseEntity(null, HttpStatus.OK)
     }
 
     @CrossOrigin
     @GetMapping(value = "/{id}/restaurants")
-    fun getRestaurants(@PathVariable id: Long): ResponseEntity<MutableList<PreferredRestaurant>> {
+    fun getRestaurants(@PathVariable id: Long): ResponseEntity<MutableList<Restaurant>> {
         val team: Team = repository.findById(id)
 
         if (Objects.isNull(team))
             return ResponseEntity(null, HttpStatus.NOT_FOUND)
 
-        return ResponseEntity(team.preferredRestaurants, HttpStatus.OK)
+        return ResponseEntity(null, HttpStatus.OK)
     }
 
 
     @CrossOrigin
     @GetMapping(value = "/{id}/history")
-    fun getHistory(@PathVariable id: Long): ResponseEntity<MutableList<UsedRestaurant>> {
+    fun getHistory(@PathVariable id: Long): ResponseEntity<MutableList<Restaurant>> {
         val team: Team = repository.findById(id)
 
         if (Objects.isNull(team))
             return ResponseEntity(null, HttpStatus.NOT_FOUND)
 
-        return ResponseEntity(team.usedRestaurants, HttpStatus.OK)
+        return ResponseEntity(null, HttpStatus.OK)
     }
 
     /**
@@ -73,10 +68,10 @@ class TeamController @Autowired constructor(val repository: TeamRepository,
             return ResponseEntity(null, HttpStatus.NOT_FOUND)
 
         //try to get a restaurant for today
-        val todayUsedRestaurant: UsedRestaurant = teamService.getDailyRestaurant(team)!!
+        val todayUsedRestaurant: Restaurant = teamService.getDailyRestaurant(team)!!
         if (Objects.isNull(todayUsedRestaurant))
             return ResponseEntity(null, HttpStatus.NOT_FOUND)
 
-        return ResponseEntity(todayUsedRestaurant.restaurant, HttpStatus.OK)
+        return ResponseEntity(null, HttpStatus.OK)
     }
 }

@@ -26,28 +26,9 @@ class RestaurantController @Autowired constructor(val repository: RestaurantRepo
 
     @CrossOrigin
     @PostMapping(value = "/add")
-    fun add(@RequestParam(value = "name") name: String): Restaurant {
+    fun add(@RequestParam(value = "name") name: String): Restaurant? {
 
-        val restaurant = Restaurant(
-                name,
-                /*Address(
-                        50.636432, 3.062100,
-                        6,
-                        "rue Jean Roisin",
-                        "",
-                        "",
-                        59000,
-                        "Lille",
-                        "France",
-                        "FR"
-                ),*/
-                ArrayList<FoodCategory>(),
-                PriceCategory.LP_PRICE_STANDARD,
-                "")
-
-        repository.save(restaurant)
-
-        return restaurant
+        return null
     }
 
 }

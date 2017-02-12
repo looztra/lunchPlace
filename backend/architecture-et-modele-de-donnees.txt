@@ -1,34 +1,32 @@
+REGLE: DATA FIRST (i.e.: le plus important c'est de pouvoir stocker/récupérer facilement la donnée)
+
 Organisation:
-- id
+- _id
 - description
 - name
-- teams [team_id]
 - users [user_id]
-- restaurants:
-    - restaurant_id
-    - registred_by: ${user_id}
-    - at: ${timestamp}
-
-Scores:
-- restaurant_id
-- user_id: ${score}
-- timestamp: xxx
 
 Restaurant
-- id
+- _id
 - name
 - address
 - foodCategories [foodCategoryId]
 - priceCategory
+- organisations:
+  - id
+  - registar
+  - at
+- teams:
+  - id
+  - registar
+  - at
+
 
 Team
 - id
 - name
 - description
-- restaurants:
-    - restaurant_id
-    - ts_added
-    - user_id
+- organisationId
 - management:
   - created_by
 
@@ -37,8 +35,11 @@ User
 - first_name
 - last_name
 - nick_name
+- ???identifiant unique coté auth0???
+- organisations: [orgaId]
 
-choices:
+
+Choice:
 - date
 - team_id
 - suggested_restaurant:
@@ -49,7 +50,13 @@ choices:
     - timestamp
     - user_id
 
-votes:
+Score:
+- restaurant_id
+- user_id
+- score : ${score}
+- at: xxx
+
+Vote:
     - date
     - user_id
     - team_id
@@ -57,32 +64,68 @@ votes:
         - up_voted_restaurant_id
         - down_voted_restaurant_id
         - why_not_restaurant_id
+        - at
 
-
-team_content_history
+team_content
 - date
 - team_id
 - users:
   - user_id
-  - entered_team_ts
-  - left_team_ts
-  - is_current_member
+  - at
 
 
-Quelles sont les orgas d'un user: GET /user/{id}/organisations
-Quelles sont les teams d'une organisation: GET /organisation/{id}/teams
-Quels sont les users d'une organisation: GET /organisation/{id}/users
-Quels sont les restaurants d'une orga: GET /organisation/{id}/restaurants
-Quels sont les restaurants d'une team: GET /team/{id}/restaurants
-Vote du jour d'un user: POST /user/{id}/team/{id}/vote
-En tant qu'utilisateur, s'enregistrer dans une equipe pour le jour en cours: POST /user/team/{id}/register
+
+
+Quelles sont les orgas d'un user: GET /user/{id}/organisations <db.organisation.find( { users : $userId})>
+=> input userId
+=> output [Organisation]
+
+Quelles sont les teams d'une organisation: GET /organisation/{id}/teams (team.find( orgaId))
+=> input orgaId
+=> output [Team]
+
+Quels sont les users d'une organisation: GET /organisation/{id}/users (user.find( organisation.id = orgaId)
+=> input orgaId
+=> output [User]
+
+Quels sont les restaurants d'une orga: GET /organisation/{id}/restaurants (restaurant.find( organisation.id = orgaId))
+=> input orgaId
+=> output: [Restaurant]
+
+Quels sont les restaurants d'une team: GET /team/{id}/restaurants (restaurant.find ( teams.id = teamId )
+=> input teamId
+=> output: [Restaurant]
+
+En tant qu'utilisateur, s'enregistrer dans une équipe pour le jour en cours: POST /team/{id}/register
+=> input teamId, userId:
+=> operations:
+    - team_content.update({date,teamId}, { $addToSet : { users : {} } })
+
+Lister tous les membres d'une équipe pour une journée/la journée en cours
+=> team_content.find(date,teamId)
+
+Vote du jour d'un user: POST /team/{id}/vote (ou /user/{id}/team/{id}/vote?)
+=> input userId, teamId, vote {up: r_id, down: r_id, whyNot: r_id}
+(vote.update avec upsert)
+
 En tant qu'utilisateur, je peux noter un restaurant d'une orga: POST /restaurant/{id}/score
+=> score.update({userId,restaurantId},{score}, upsert=true)
+
 En tant qu'utilisateur, je peux voir la note que j'ai donnée à un restaurant d'une orga: GET /restaurant/{id}/score
+=> score.find(userId,restaurantId)
+
 En tant qu'admin, enregistrer un user dans une orga: POST /organisation/{id}/user/{id}/register
+=> - organisation.update($addToSet)
+   - user.update($addToSet)
+
 En tant qu'admin, creer une nouvelle orga: POST /organisation
+
+
 En tant que appli FRONT, je déclare une connexion d'un utilisateur: POST /user/
   - retourne un 201 si nouvel utilisateur
   - retourne un 200 si utilisateur connu
+
+
 
 En tant qu'admin:
   Editer une orga
@@ -92,3 +135,9 @@ En tant qu'admin:
 
 En tant que membre d'une orga, je peux ajouter un restaurant à une orga: POST /organisation/{id}/restaurant/add
 En tant que membre d'une equipe, je peux ajouter un restaurant à une équipe: POST /team/{id}/restaurant/add
+
+En tant qu'algorithme de vote (:]) je veux:
+- la liste de toutes les notes des restaurants d'une équipe pour les utilisateurs inscrits dans l'équipe pour la journée
+=> step 1: tous les users du jour de la team
+=> step 2: les notes des restaurants pour cette liste d'utilisateurs
+- la liste des votes des utilisateurs d'une équipe pour les utilisateurs inscrits dans l'équipe pour la journée

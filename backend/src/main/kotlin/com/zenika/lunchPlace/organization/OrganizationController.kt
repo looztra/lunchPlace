@@ -24,11 +24,9 @@ class OrganizationController @Autowired constructor(val repository: Organization
 
     @CrossOrigin
     @PostMapping(value = "/add")
-    fun add(@RequestParam(value = "name", defaultValue = "Zenika") name: String): Organization {
+    fun add(@RequestParam(value = "name", defaultValue = "Zenika") name: String): Organization? {
 
-        val organization = Organization(name, ArrayList<Team>())
-
-        repository.save(organization)
+        val organization = null
 
         return organization
     }
